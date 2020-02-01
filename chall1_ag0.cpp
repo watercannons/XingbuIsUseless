@@ -20,7 +20,6 @@ int convertToBin(int n){
 
 }
 */
-
 char getCharacterFrom7Bits(string s){
   int backtodec = 0;
 
