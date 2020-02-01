@@ -20,6 +20,15 @@ int convertToBin(int n){
 
 }
 */
+
+string reverseString(string s){
+  string out = "";
+  for(int i = s.size()-1; i >= 0; i--){
+    out += s[i];
+  }
+  return out;
+}
+
 char getCharacterFrom7Bits(string s){
   int backtodec = 0;
 
@@ -36,6 +45,9 @@ char getCharacterFrom7Bits(string s){
 
 int main(int argc, char** argv)
 {
+
+  ofstream w;
+  w.open("arthur_out.txt");
   cout << "argc: " << argc << endl;
   ifstream ifs;
 
@@ -75,20 +87,21 @@ int main(int argc, char** argv)
   string res = "";
   while(true){
     string temp = stream.substr(0,7);
-    cout << getCharacterFrom7Bits(temp) << " , " << "temp: " << temp << endl;;
+    cout << getCharacterFrom7Bits(temp) << " , " << "temp: " << reverseString(temp) << endl;
+    w << getCharacterFrom7Bits(temp) << " , " << "temp: " << reverseString(temp) << endl;
     res += getCharacterFrom7Bits(temp);
     if(stream.length() < 7) break;
     stream = stream.substr(7);
   }
- 
 
-
+  ifs.close();
+  
   cout << "test: " << getCharacterFrom7Bits("1100001") << endl;
 
 
   cout << "res: " << res << endl;
-
-
+  w << "res: " << res << endl;
+  w.close();
 
   return 0;
 }
