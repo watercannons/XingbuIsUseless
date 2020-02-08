@@ -246,7 +246,7 @@ SegmentTable getSegmentTable() {
 
 int main(){
     ifstream ifs;
-    ifs.open("clean2.txt");
+    ifs.open("output_4.txt");
     string line;
     //cout << "ethan1" << endl;
     while (getline(ifs,line)) {
