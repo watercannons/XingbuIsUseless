@@ -51,7 +51,7 @@ int main(int argc, char** argv)
   cout << "argc: " << argc << endl;
   ifstream ifs;
 
-  if(argc == 1) ifs.open("challenge1Flag.txt");
+  if(argc == 1) ifs.open("chall2_new2.orc");
   else ifs.open(argv[1]);
 
   if(!ifs){
@@ -82,12 +82,16 @@ int main(int argc, char** argv)
   //   }
   // }
 
-  string temp = stream.substr(0,7);
-  cout << "temp: " << temp << endl;
+  //string temp = stream.substr(0,7);
+  //cout << "temp: " << temp << endl;
   string res = "";
+  int linenum = 0;
   while(true){
     string temp = stream.substr(0,7);
-    cout << getCharacterFrom7Bits(temp) << " , " << "temp: " << reverseString(temp) << endl;
+    //cout << getCharacterFrom7Bits(temp) << " , " << "temp: " << reverseString(temp) << endl;
+    cout << linenum << ": " << reverseString(temp)  << endl;
+    //cout << endl;
+    linenum++;
     w << getCharacterFrom7Bits(temp) << " , " << "temp: " << reverseString(temp) << endl;
     res += getCharacterFrom7Bits(temp);
     if(stream.length() < 7) break;
@@ -96,11 +100,11 @@ int main(int argc, char** argv)
 
   ifs.close();
   
-  cout << "test: " << getCharacterFrom7Bits("1100001") << endl;
+  //cout << "test: " << getCharacterFrom7Bits("1100001") << endl;
 
 
-  cout << "res: " << res << endl;
-  w << "res: " << res << endl;
+  //cout << "res: " << res << endl;
+  //w << "res: " << res << endl;
   w.close();
 
   return 0;
