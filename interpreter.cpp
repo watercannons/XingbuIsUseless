@@ -15,6 +15,7 @@ class noMoreByte7s{};
 
 unsigned int MI = 0;
 vector<string> F;
+ofstream ofs;
 
 enum FileType : Byte7 { EXE = 0, OBJ = 1 };
 
@@ -113,7 +114,7 @@ int getWord28() {
 
 string getText7() {
     string out = "";
-    // cout << "in get7" << endl;
+    // ofs << "in get7" << endl;
     while (F[MI]!="0000000"){
        out += getByte7();
     }
@@ -128,7 +129,7 @@ char getByte7() {
 Permissions getPermissions() {
     Permissions p;
     p.word28 = getByte7();
-    cout << "Permissions: " << p.word28 << endl;
+    ofs << "Permissions: " << p.word28 << endl;
     return p;
 }
 
@@ -136,16 +137,16 @@ Symbol getSymbol() {
     Symbol s;
 
     s.name = getText7();
-    cout << "   Symbol Name: " << s.name << endl;
-    s.type = (SymbolType)getByte7();
-    cout << "   Symbol Type: " << s.type << endl;
+    ofs << "   Symbol Name: " << s.name << endl;
+    //s.type = (SymbolType)getByte7();
+    //ofs << "   Symbol Type: " << s.type << endl;
     s.isDefined = (Bool)getByte7();
-    cout << "   Symbol Defined: " << s.isDefined << endl;
+    ofs << "   Symbol Defined: " << s.isDefined << endl;
     if (s.isDefined) {
         s.section = getWord28();
-        cout << "       Symbol Section: " << s.section << endl;
+        ofs << "       Symbol Section: " << s.section << endl;
         s.offset = getWord28();
-        cout << "       Symbol Offset: " << s.offset << endl;
+        ofs << "       Symbol Offset: " << s.offset << endl;
     }
 
     return s;
@@ -155,7 +156,7 @@ Symbol getSymbol() {
 SymbolTable getSymbolTable() {
     SymbolTable st;
     st.numEntries = getWord28();
-    cout << "SymbolTable numEntries: " <<  st.numEntries << endl;
+    ofs << "SymbolTable numEntries: " <<  st.numEntries << endl;
 
     st.symbols = new Symbol[st.numEntries];
     for (Word28 i = 0; i < st.numEntries; i++)
@@ -168,13 +169,13 @@ Relocation getRelocation() {
     Relocation r;
 
     r.offset = getWord28();
-    cout << "   Relocation Offset: " << r.offset << endl;
+    ofs << "   Relocation Offset: " << r.offset << endl;
     r.section = getWord28();
-    cout << "   Relocation selection: " << r.section << endl;
+    ofs << "   Relocation selection: " << r.section << endl;
     r.symbol = getText7();
-    cout << "   Relocation symbol: " << r.symbol << endl;
+    ofs << "   Relocation symbol: " << r.symbol << endl;
     r.plus = getWord28();
-    cout << "   Relocation plus: " << r.plus << endl;
+    ofs << "   Relocation plus: " << r.plus << endl;
     return r;
 
 }
@@ -183,7 +184,7 @@ RelocationTable getRelocationTable() {
     RelocationTable rt;
 
     rt.numEntries = getWord28();
-    cout << "Relocation Table Entries: " << rt.numEntries << endl;
+    ofs << "Relocation Table Entries: " << rt.numEntries << endl;
 
     for (Word28 i = 0; i < rt.numEntries; i++)
         rt.relocations[i] = Relocation( getRelocation() );
@@ -192,43 +193,43 @@ RelocationTable getRelocationTable() {
 }
 Section getSection() {
     Section s;
-    cout << "   Section getPermissions:    ";
+    ofs << "   Section getPermissions:    ";
     s.permissions =  getPermissions();
     s.offset = getWord28();
-    cout << "   Section offset: " << s.offset << endl;
+    ofs << "   Section offset: " << s.offset << endl;
     s.name = getText7();
-    cout << "   Section name: " << s.name << endl;
+    ofs << "   Section name: " << s.name << endl;
     s.size = getWord28();
-    cout << "   Section size: " << s.size << endl;
+    ofs << "   Section size: " << s.size << endl;
     return s;
 }
 SectionTable getSectionTable() {
     SectionTable st;
 
     st.numEntries = getWord28();
-    cout << "SectionTable numEntries: " << st.numEntries << endl;
+    ofs << "SectionTable numEntries: " << st.numEntries << endl;
     st.section = new Section[ st.numEntries ];
     for (Word28 i = 0; i < st.numEntries; i++)
         st.section[i] = Section(  getSection() );
-
+    ofs << "SectionTable numEntries: " << st.numEntries <<"    MI: " << MI<< endl;
     return st;
 }
 Segment getSegment() {
     Segment s;
 
     s.name = getText7();
-    cout << "   Segment numEntries: " << s.name << endl;
+    ofs << "   Segment numEntries: " << s.name << endl;
     s.offset  = getWord28();
-    cout << "   Segment offset: " << s.offset << endl;
+    ofs << "   Segment offset: " << s.offset << endl;
     s.base = getWord28();
-    cout << "   Segment base: " << s.base << endl;
-    s.size = getWord28();
-    cout << "   Segment size: " << s.size << endl;
+    ofs << "   Segment base: " << s.base << endl;
+    //s.size = getWord28();
+    //ofs << "   Segment size: " << s.size << endl;
 
-    cout << "   Segment getPermissions:    ";
+    ofs << "   Segment getPermissions:    ";
     s.permissions = getPermissions();
     s.type = (SegmentType)getByte7();
-    cout << "   Segment type: " << s.type << endl;
+    ofs << "   Segment type: " << s.type << endl;
 
     return s;
 }
@@ -236,7 +237,7 @@ SegmentTable getSegmentTable() {
     SegmentTable st;
 
     st.numEntries = getWord28();
-    cout << "SegmentTable numEntries: " << st.numEntries << endl;
+    ofs << "SegmentTable numEntries: " << st.numEntries << endl;
     st.segment = new Segment[ st.numEntries ];
     for (Word28 i = 0; i < st.numEntries; i++)
         st.segment[i] = Segment(  getSegment() );
@@ -246,29 +247,31 @@ SegmentTable getSegmentTable() {
 
 int main(){
     ifstream ifs;
-    ifs.open("output_4.txt");
+    ifs.open("output_7.txt");
+    //ifs.open("../arthur_out.txt");
     string line;
-    //cout << "ethan1" << endl;
+    //ofs << "ethan1" << endl;
     while (getline(ifs,line)) {
         if(line == "---") break;
         F.push_back(line);
-        //cout << "f.size: " << F.size() << endl;
+        //ofs << "f.size: " << F.size() << endl;
     }
-    //cout << "ethan2" << endl;
+    //ofs << "ethan2" << endl;
+    ifs.close();
 
-
+    ofs.open("results.txt");
 
     Text7 header = getText7();
-    cout << "Header: " <<header << endl;
+    ofs << "Header: " <<header << endl;
     FileType type = (FileType)getByte7();
-    cout << "FileType: "<< (FileType)type << endl;
+    ofs << "FileType: "<< (FileType)type << endl;
     Bool hasEntryPoint = (Bool)getByte7();
-    cout << "hasEntryPoint: " << (int)hasEntryPoint << endl;
+    ofs << "hasEntryPoint: " << (int)hasEntryPoint << endl;
     if (hasEntryPoint)
     {
         Word28 entryPoint = 0;
         entryPoint = getWord28();
-        cout << "EntryPoint: " << entryPoint << endl;
+        ofs << "EntryPoint: " << entryPoint << endl;
     }
         
 
@@ -276,19 +279,28 @@ int main(){
 
     RelocationTable relocationTable = RelocationTable( getRelocationTable() );
 
-    // SectionTable sectionTable = SectionTable( getSectionTable() );
+    SectionTable sectionTable = SectionTable( getSectionTable() );
 
-    // SegmentTable segmentTable = SegmentTable( getSegmentTable() );
+    cout << "ethan rox!!!!!!\n"; 
 
-    // Byte7 * contents = new Byte7[ F.size() - MI ];
-    // // try { for (size_t i = 0; true; i++) contents[i] = getByte7(); }
-    // for (size_t i = 0; true; i++) {
-    //     try { contents[i] = getByte7(); }
-    //     catch ( noMoreByte7s e ) {break;}
-    // }
+    SegmentTable segmentTable = SegmentTable( getSegmentTable() );
+
+     Byte7 * contents = new Byte7[ F.size() - MI ];
+    // try { for (size_t i = 0; true; i++) contents[i] = getByte7(); }
+     for (size_t i = 0; true; i++) {
+        try 
+        { //contents[i] = getByte7();
+                //char temp = getByte7();
+                //if(temp != 0)
+                    ofs << getByte7(); 
+        }
+         catch ( noMoreByte7s e ) {break;}
+         //ofs << endl;
+     }
     
 
     cout << "ethan rox!!!!!!\n"; 
+    ofs.close();
 
     return 0;
     

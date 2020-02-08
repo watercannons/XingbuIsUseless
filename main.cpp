@@ -116,36 +116,72 @@ int main(int argc, char **argv)
   // w.close();
   ofstream w;
   ifstream ifs;
-  if (argc == 1) ifs.open("chall2.orc");
-  if (!ifs)
-  {
-    cout << "IFS didn't open correctly" << endl;
-    return 0;
-  }
-  w.open("output_6.txt");
-  string line = "";
+
+  ifs.open("chall2.orc");
+  w.open("output_7.txt");
   string stream;
-  int linenum = 0;
-  while (ifs)
-  {
-    getline(ifs, line);
-    stream = "";
-    for (int i = 0; i < line.length(); i++)
-    {
-      stream += std::bitset<8>(line[i]).to_string();
-      string res = "";
-      
-      while (true)
-      {
-        if (stream.length() < 7) break;
-        string temp = stream.substr(0, 7);
-        cout << linenum << ": " << reverseString(temp) << endl;
-        linenum++;
-        w << reverseString(temp) << endl;
-        stream = stream.substr(7);
-      }
-    }
+
+  char c;
+  while(ifs.get(c)){
+    stream += std::bitset<8>(c).to_string();
+    //w << c << endl;
   }
+  int linenum = 0;
+  while(true){
+    string temp = stream.substr(0,7);
+    //cout << getCharacterFrom7Bits(temp) << " , " << "temp: " << reverseString(temp) << endl;
+    cout << linenum << ": " << reverseString(temp)  << endl;
+    //cout << endl;
+    linenum++;
+    w << reverseString(temp) << endl;
+    //res += getCharacterFrom7Bits(temp);
+    if(stream.length() < 7) break;
+    stream = stream.substr(7);
+  }
+  //cout << stream << endl;
+  //w << stream;
+  //}
+
+  ifs.close();
+  w.close();
+  // // if (argc == 1) ifs.open("chall2.orc");
+  // if (argc == 1) ifs.open("chall2.orc");
+  // if (!ifs)
+  // {
+  //   cout << "IFS didn't open correctly" << endl;
+  //   return 0;
+  // }
+  // w.open("output_6.txt");
+  // string line = "";
+  // string stream;
+  // int linenum = 0;
+  // bool first = true;
+  // while (ifs)
+  // {
+  //   getline(ifs, line);
+  //   stream = "";
+  //   if (!first) line += "\n";
+  //   else first = false;
+  //   for (int i = 0; i < line.length(); i++)
+  //   {
+  //     stream += std::bitset<8>(line[i]).to_string();
+  //   }
+  //   stream += "00001010";
+  //     string res = "";
+  //     cout << "stream: " << stream << endl;
+      
+  //     while (true)
+  //     {
+  //       if (stream.length() < 7) break;
+  //       string temp = stream.substr(0, 7);
+  //       cout << linenum << ": " << reverseString(temp) << endl;
+  //       //cout << linenum << ": " << temp << endl;
+  //       linenum++;
+  //       w << reverseString(temp) << endl;
+  //       stream = stream.substr(7);
+  //     }
+  //   }
+  
 
   return 0;
 }
